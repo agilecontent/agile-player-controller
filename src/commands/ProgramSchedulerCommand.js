@@ -10,7 +10,7 @@ define(['agile-app'], function (Agile) {
     _videoType: 'TY_STR_VIDEO',
 
     execute: function (data) {
-      this._initStreamsStorage();
+      //this._initStreamsStorage();
 
       this._runningTimeout = this._runningTimeout || [];
 
@@ -18,13 +18,19 @@ define(['agile-app'], function (Agile) {
 
       this._clearTimeout();
 
-      this._data = data;
-
       this._parseProgram(data);
+
+      // Create the event
+      var event = new CustomEvent("reload-tabs-header", {});
+
+      // Dispatch/Trigger/Fire the event
+      document.dispatchEvent(event);
     },
 
-    _initStreamsStorage: function () {
-      var i = 0, l = this._streamSize;
+    _initStreamsStorage: function (streamSize) {
+      var i = 0, l = streamSize;
+
+      this._currentBroadcastings = [];
 
       this._currentStreams = [];
 
@@ -51,7 +57,6 @@ define(['agile-app'], function (Agile) {
 
 
     _parseProgram: function (data) {
-      var clientDate = new Date(Date.now());
       this._now = new Date(data.now).getTime();
 
       this._retrieveDate = Date.now();
@@ -66,14 +71,26 @@ define(['agile-app'], function (Agile) {
 
       var stream, streamNumber;
 
-      this._checkVideoStreaming(data);
+
 
       for (var i = 0; i < data.length; i++) {
-        streamNumber = data[i].orden;
+        this._initStreamsStorage (data[i].streamings.length)
+        this._currentBroadcastings[i] = {
+          order: data[i].orden,
+          textLive: data[i].textLive,
+          id: data[i].id,
+          streamings: []
+        }
+        var dataStreamings = data[i].streamings;
+        this._checkVideoStreaming(dataStreamings);
 
-        stream = this._initProgramMap(data[i].broadcasts, streamNumber);
+        for (var j = 0; j < dataStreamings.length; j++) {
+          streamNumber = dataStreamings[j].orden;
 
-        this._setCanal(stream, streamNumber);
+          stream = this._initProgramMap(dataStreamings[j].broadcasts, streamNumber);
+
+          this._setCanal(stream, streamNumber, this._currentBroadcastings[i]);
+        }
       }
 
       this._allDayEndProg.sort(function (a, b) {
@@ -82,12 +99,12 @@ define(['agile-app'], function (Agile) {
     },
 
 
-    _manageStreams: function (prog, stream) {
+    _manageStreams: function (prog, stream, brodcasting) {
       var event, tmpStream, antenaIndex, antena;
 
       stream = parseInt(stream, 10);
 
-      if (prog.isAtenna) {
+      if (prog.isAntenna) {
         this._sortStreams();
 
         tmpStream = this._currentStreams.splice(stream - 1, 1)[0];
@@ -99,7 +116,7 @@ define(['agile-app'], function (Agile) {
         else
           this._currentStreams.unshift(tmpStream);
 
-        event = 'set:atenna:program';
+        event = 'set:antenna:programMultiple';
       } else {
         this._sortStreams();
 
@@ -115,7 +132,7 @@ define(['agile-app'], function (Agile) {
           });
         }
 
-        antenaIndex = this._searchForAtenna();
+        antenaIndex = this._searchForAntenna();
 
         antena = this._currentStreams.splice(antenaIndex, 1)[0];
 
@@ -123,10 +140,12 @@ define(['agile-app'], function (Agile) {
 
         this._currentStreams.unshift(antena);
 
-        event = 'set:program';
+        event = 'set:programMultiple';
       }
 
-      this.triggerToModule(event, this._currentStreams);
+      brodcasting.streamings=this._currentStreams;
+
+      this.triggerToModule(event, brodcasting);
     },
 
 
@@ -140,10 +159,10 @@ define(['agile-app'], function (Agile) {
     },
 
 
-    _searchForAtenna: function () {
+    _searchForAntenna: function () {
       var i = 0, l = this._currentStreams.length;
       for (; i < l; i++) {
-        if (this._currentStreams[i].program && this._currentStreams[i].program.isAtenna) {
+        if (this._currentStreams[i].program && this._currentStreams[i].program.isAntenna) {
           return i;
         }
       }
@@ -261,11 +280,11 @@ define(['agile-app'], function (Agile) {
     },
 
 
-    _setCanal: function (data, stream) {
+    _setCanal: function (data, stream, brodcasting) {
       var current = data.shift(), end;
 
       if (current) {
-        this._manageStreams(this._streams[stream][current], stream);
+        this._manageStreams(this._streams[stream][current], stream, brodcasting);
         end = this._streams[stream][current].end;
       }
 

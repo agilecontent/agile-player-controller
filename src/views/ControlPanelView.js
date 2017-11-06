@@ -11,6 +11,9 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
     },
 
     ui: {
+      listBroadcastings: 'ul[data-selector="panel-broadcastings"]',
+      listStreamings: 'div[data-selector="list-streamings"]',
+
       stream1: 'div[data-selector="canal1"]',
       stream2: 'div[data-selector="canal2"]',
       stream3: 'div[data-selector="canal3"]',
@@ -54,10 +57,13 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
     moduleEvents: {
       'set:program': '_changeHeader',
-      'set:atenna:program': '_changeHeader',
+      'set:programMultiple': '_changeMultipleHeader',
+      'set:antenna:program': '_changeHeader',
+      'set:antenna:programMultiple': '_changeMultipleHeader',
       'reset:play:btn:panel': '_reinitPlayBtnState',
       'init:stream:sources': '_onStreamRetrieve',
-      'set:play:btn:panel': '_onSetPlayBtn'
+      'set:play:btn:panel': '_onSetPlayBtn',
+      'clean:programMultiple': '_cleanMultipleHeader'
     },
 
 
@@ -69,9 +75,16 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
 
     onBinding: function () {
-      this._initUI();
-      if (this._streams.length) {
-        this._updateUI();
+      if (this.ui.listBroadcastings.length > 0) {
+        if (this._streams.length) {
+          this._updateMultipleUI();
+        }
+      }
+      else {
+        this._initUI();
+        if (this._streams.length) {
+          this._updateUI();
+        }
       }
 
     },
@@ -113,6 +126,41 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       }
     },
 
+    _cleanMultipleHeader: function () {
+      $('ul[data-selector="panel-broadcastings"] li').not(':first').remove();
+      $('div[data-selector="list-streamings"] div.list').remove();
+    },
+
+    _changeMultipleHeader: function (data) {
+      var i = 0, l = data.streamings.length, countProg;
+
+      this._streams = data.streamings;
+
+      this._reinitPlayBtnState();
+
+      var dataBroadcastingExist = this._checkBrAlreadyExist(data);
+      if (!dataBroadcastingExist) {
+        this._setBroadcastingUI(data);
+      }
+      /*<div id="tabHeader1" class="list select">
+      <div class="owl-carousel owl-theme" id="owlCarouselHeader">*/
+      var dataStreamingCarouselExsist = this._checkStreamingCarouselAlreadyExist(data);
+      if (!dataStreamingCarouselExsist) {
+        this._setStreamingCarouselUI(data);
+      }
+
+      for (; i < l; i++) {
+        var dataStreamingExist = this._checkMultipleAlreadyExist(data.streamings[i], data.order);
+        if (!dataStreamingExist) {
+          this._setUIMultipleChange(data.streamings[i], data.order);
+        }
+      }
+      if ($("#owlCarouselHeader" + data.order).children().length === 0) {
+        $("#tabHeader" + data.order).remove();
+        $("#tabTitle" + data.order).remove();
+      }
+    },
+
     _countProg: function (data) {
       var i = 1, l = data.length, countProg = 0, streamName;
       for (; i <= l; i++) {
@@ -130,11 +178,41 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       return position;
     },
 
+    _checkBrAlreadyExist: function (data) {
+      var dataDiv = document.querySelector('li[data-broadcasting-id="' + data.id + '"]');
+      if (dataDiv != null)
+          return true;
+      else
+        return false;
+    },
+
+    _checkStreamingCarouselAlreadyExist: function (data) {
+      var dataDiv = document.querySelector('div[id="tabHeader' + data.order + '"]');
+      if (dataDiv != null)
+        return true;
+      else
+        return false;
+    },
+
+    _checkMultipleAlreadyExist: function (data, broadcasting) {
+      if (data.program) {
+        var dataDiv = document.querySelector('div[id="tabHeader'+broadcasting+'"] div[data-streaming-id="' + data.program.programId + '-' + data.program.start + '-' + data.program.end + '"]');
+        if (dataDiv != null)
+          if (data.program.isAntenna && dataDiv.getAttribute('data-antenna') == "false")
+            return false;
+          else
+            return true;
+        else
+          return false;
+      } else
+        return false;
+    },
+
     _checkAlreadyExist: function (data) {
       if (data.program) {
         var dataDiv = document.querySelector('div[data-streaming-id="' + data.program.programId + '-' + data.program.start + '-' + data.program.end + '"]');
         if (dataDiv != null)
-          if (data.program.isAtenna && dataDiv.getAttribute('data-atenna') == "false")
+          if (data.program.isAntenna && dataDiv.getAttribute('data-antenna') == "false")
             return false;
           else
             return true;
@@ -150,6 +228,14 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
       for (; i < l; i++) {
         this._setUIChange(this._streams[i].program, i + 1);
+      }
+    },
+
+    _updateMultipleUI: function () {
+      var l = this._streams.length, i = 0;
+
+      for (; i < l; i++) {
+        this._setUIMultipleChange(this._streams[i].program, i + 1);
       }
     },
 
@@ -206,7 +292,94 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       this.ui[btnStream].attr('href', '');
       this.ui[btnStream].attr('href', this._streamMap[data.stream]);
       this.ui[streamName][0].dataset.streamingId = data.program.programId + '-' + data.program.start + '-' + data.program.end;
-      this.ui[streamName][0].dataset.atenna = data.program.isAtenna;
+      this.ui[streamName][0].dataset.antenna = data.program.isAntenna;
+    },
+
+    _setBroadcastingUI: function (data) {
+      var li = document.createElement("li");
+      var a = document.createElement('a');
+      var linkText = document.createTextNode(data.textLive);
+      a.appendChild(linkText);
+      a.className = "btn"+(1+data.order);
+      a.href = "#tabHeader"+data.order;
+      li.className ="item";
+      li.id = "tabTitle"+data.order;
+      li.dataset.broadcastingId = data.id;
+      li.appendChild(a);
+      this.ui.listBroadcastings.append(li);
+    },
+
+    _setStreamingCarouselUI: function (data) {
+      var list = document.createElement("div");
+      var owl = document.createElement('div');
+      owl.id = "owlCarouselHeader"+data.order;
+      owl.className = "owl-carousel owl-theme";
+      list.className ="list";
+      list.id = "tabHeader"+data.order;
+      list.appendChild(owl);
+
+      this.ui.listStreamings.append(list);
+    },
+
+
+
+    _setUIMultipleChange: function (data, broadcasting) {
+      var prgrm = data.program;
+      /*<div class="right play"><span class="btnIcon iconPlay"><i class="icon-"></i></span></div>*/
+
+      var item = document.createElement("div"), headerItem = document.createElement("div"), left = document.createElement("div"), center = document.createElement("div"), right = document.createElement("div");
+      var img = document.createElement("img"), titPlayer= document.createElement("p"), authorPlayer = document.createElement("span"), btnIcon = document.createElement("span"), link = document.createElement("a"), icon = document.createElement("i");
+
+      if (prgrm !== false) {
+        item.className = "item";
+        headerItem.className = "modHeaderPlayer";
+        left.className = "left";
+        center.className = "center";
+        right.className = "right ";/* play or pause */
+        titPlayer.className = "titPlayer";
+        authorPlayer.className = "authorPlayer";
+        btnIcon.className = "btnIcon iconPlay";
+        icon.className = "icon-";
+
+        item.dataset.streamingId = data.program.programId + '-' + data.program.start + '-' + data.program.end;
+        item.dataset.antenna = data.program.isAntenna;
+
+
+        var src = prgrm.image;
+        img.setAttribute('src', src);
+
+        var text = document.createTextNode(prgrm.title);
+        titPlayer.appendChild(text);
+
+        if (data.play) {
+          right.dataset.state = this._states.PLAYING;
+          right.classList.add('pause');
+        } else {
+          right.dataset.state = this._states.STOPPED;
+          right.classList.add('play');
+        }
+
+
+        link.setAttribute('target','window_player');
+        link.setAttribute('href', this._streamMap[broadcasting][data.stream]);
+        right.dataset.stream = data.stream;
+
+        link.appendChild(icon);
+        btnIcon.appendChild(link);
+        right.appendChild(btnIcon);
+        center.appendChild(titPlayer);
+        center.appendChild(authorPlayer);
+        left.appendChild(img);
+        headerItem.appendChild(left);
+        headerItem.appendChild(center);
+        headerItem.appendChild(right);
+        item.appendChild(headerItem);
+        if (data.program.isAntenna){
+          $("#owlCarouselHeader" + broadcasting).prepend(item);
+        } else {
+          $("#owlCarouselHeader" + broadcasting).append(item);
+        }
+      }
     },
 
     _addSmallClass: function () {
@@ -306,9 +479,10 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
       for (; i < l; i++) {
         btnStream = 'playBtn' + i;
-
-        this.ui[btnStream][0].dataset.state = this._states.STOPPED;
-        this.ui[btnStream].removeClass('pause');
+        if (this.ui[btnStream].length > 0) {
+          this.ui[btnStream][0].dataset.state = this._states.STOPPED;
+          this.ui[btnStream].removeClass('pause');
+        }
       }
     },
 
@@ -334,8 +508,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
 
     _setPlayBtnState: function (placeholder, isPlaying) {
-      var btnStream = 'playBtn' + placeholder,
-        state, isPlaying;
+      var btnStream = 'playBtn' + placeholder;
 
       if (isPlaying) {
         this.ui[btnStream][0].dataset.state = this._states.PLAYING;
@@ -345,7 +518,6 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       }
 
     },
-
 
     _updateStreamObject: function (streamToPlay, isPlaying) {
       this._streams.map(function (itm) {

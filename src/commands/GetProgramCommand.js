@@ -1,4 +1,4 @@
-define(['agile-app', '../components/deviceManager', 'config', '../components/streamMapOrden', '../components/streamTypeMap'], function(Agile, deviceManager, config, streamMapOrden, streamTypeMap) {
+define(['agile-app', '../components/deviceManager', 'config', '../components/streamMapOrden', ], function(Agile, deviceManager, config, streamMapOrden) {
     'use strict';
 
 	return Agile.EndpointCommand.extend({
@@ -23,7 +23,7 @@ define(['agile-app', '../components/deviceManager', 'config', '../components/str
                 data: data
             };
 
-            this.triggerToModule('init:stream:sources', this._setStreamSources(data));
+            this.triggerToModule('init:stream:sources', this._setMultipleStreamSources(data));
 
             this.triggerToModule('init:scheduler:program', programData);
         },
@@ -32,35 +32,50 @@ define(['agile-app', '../components/deviceManager', 'config', '../components/str
         _prepareData: function(data) {
             var i = 0, l = data.length, streamMap = {}, orden;
 
-            var dataResult = this._initProgramData();
+            var dataResult = this._initProgramData(data);
 
             for (; i < l; i++) {
-                orden = streamMapOrden[data[i].type];
+                dataResult[i].id = data[i].id;
+                dataResult[i].textLive = data[i].textLive;
+                var k = data[i].streamings.length,  j = 0;
+                for (; j < k; j++) {
+                  dataResult[i].streamings[j] = data[i].streamings[j];
+                  /*orden = streamMapOrden[data[i].streamings[j].type];
+                  dataResult[i].streamings[j].orden = orden;
+                  */
+                  dataResult[i].streamings[j].orden = j+1;
+                }
 
-                dataResult[orden - 1] = data[i];
-
-                dataResult[orden - 1].orden = orden;
+                dataResult[i].streamings.sort(function (a, b) {
+                  return a.orden > b.orden;
+                })
             }
-
             dataResult.sort(function(a, b) {
                 return a.orden > b.orden;
             });
-
             return dataResult;
         },
 
-
-        _initProgramData: function() {
-            var data = [], i = 0, l = this._streamSize, orden;
-
-            for (; i < l; i++) {
-                orden = i + 1;
-                data.push({
-                    orden: orden,
-                    type: streamTypeMap[orden],
-                    broadcasts: []
-                });
+        _initProgramData: function(dataBG) {
+          var data = [], i = 0, j = 0, ordenS, ordenBG;
+          for (; i < dataBG.length; i++) {
+            ordenBG = i + 1;
+            data.push({
+              id: 0,
+              orden: ordenBG,
+              textLive: "",
+              streamings: []
+            });
+            var  j = 0;
+            for (; j < dataBG[i].streamings.length; j++) {
+              ordenS = j + 1;
+              data[i].streamings.push({
+                orden: ordenS,
+                type: "",
+                broadcasts: []
+              });
             }
+          }
 
             return data;
         },
@@ -80,15 +95,27 @@ define(['agile-app', '../components/deviceManager', 'config', '../components/str
 
 
         _setStreamSources: function(data) {
-            var key = 'url_web', i = 0, l = data.length, streamMap = {};
-
-            key = 'url_streaming';
+            var key = 'url_streaming', i = 0, l = data.length, streamMap = {};
 
             for (; i < l; i++) {
-                streamMap[i + 1] = data[i][key];
+                streamMap[j + 1] = data[i][key];
             }
 
             return streamMap;
+        },
+
+    _setMultipleStreamSources: function(data) {
+      var key = 'url_streaming', i = 0, l = data.length, streamMap = {}, broadcastingMap = {};
+
+      for (; i < l; i++) {
+        var  j = 0;
+        for (; j < data[i].streamings.length; j++) {
+          streamMap[j + 1] = data[i].streamings[j][key];
         }
+        broadcastingMap[i+1] = streamMap;
+      }
+
+      return broadcastingMap;
+    }
     });
 });

@@ -25,6 +25,10 @@ define(['agile-app', 'config'], function(Agile, config) {
                 return false;
             }
 
+            if (options.force) {
+              this.triggerToModule('clean:programMultiple',{})
+            }
+
             this.triggerToModule('retrieve:program', {
                 diffWithClient: diff,
                 changeDay: changeDay
