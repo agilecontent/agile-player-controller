@@ -105,11 +105,12 @@ define(['agile-app', '../components/deviceManager', 'config', '../components/str
         },
 
     _setMultipleStreamSources: function(data) {
-      var key = 'url_streaming', i = 0, l = data.length, streamMap = {}, broadcastingMap = {};
+      var key = 'url_streaming', i = 0, l = data.length, broadcastingMap = {};
 
       for (; i < l; i++) {
         var  j = 0;
         for (; j < data[i].streamings.length; j++) {
+          var streamMap = {};
           streamMap[j + 1] = data[i].streamings[j][key];
         }
         broadcastingMap[i+1] = streamMap;
