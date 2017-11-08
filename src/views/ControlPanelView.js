@@ -325,10 +325,9 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
     _setUIMultipleChange: function (data, broadcasting) {
       var prgrm = data.program;
-      /*<div class="right play"><span class="btnIcon iconPlay"><i class="icon-"></i></span></div>*/
 
       var item = document.createElement("div"), headerItem = document.createElement("div"), left = document.createElement("div"), center = document.createElement("div"), right = document.createElement("div");
-      var img = document.createElement("img"), titPlayer= document.createElement("p"), authorPlayer = document.createElement("span"), btnIcon = document.createElement("span"), link = document.createElement("a"), icon = document.createElement("i");
+      var img = document.createElement("img"), titPlayer= document.createElement("p"), authorPlayer = document.createElement("span"), hourPlayer = document.createElement("span"), btnIcon = document.createElement("span"), link = document.createElement("a"), icon = document.createElement("i");
 
       if (prgrm !== false) {
         item.className = "item";
@@ -338,6 +337,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
         right.className = "right ";/* play or pause */
         titPlayer.className = "titPlayer";
         authorPlayer.className = "authorPlayer";
+        hourPlayer.className = "horaPlayer";
         btnIcon.className = "btnIcon iconPlay";
         icon.className = "icon-";
 
@@ -348,8 +348,15 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
         var src = prgrm.image;
         img.setAttribute('src', src);
 
-        var text = document.createTextNode(prgrm.title);
-        titPlayer.appendChild(text);
+        var titText = document.createTextNode(prgrm.title);
+        titPlayer.appendChild(titText);
+
+        var authorText = document.createTextNode(prgrm.host);
+        authorPlayer.appendChild(authorText);
+
+
+        var hourText = document.createTextNode(prgrm.hours);
+        hourPlayer.appendChild(hourText);
 
         if (data.play) {
           right.dataset.state = this._states.PLAYING;
@@ -358,7 +365,6 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
           right.dataset.state = this._states.STOPPED;
           right.classList.add('play');
         }
-
 
         link.setAttribute('target','window_player');
         link.setAttribute('href', this._streamMap[broadcasting][data.stream]);
@@ -369,6 +375,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
         right.appendChild(btnIcon);
         center.appendChild(titPlayer);
         center.appendChild(authorPlayer);
+        center.appendChild(hourPlayer);
         left.appendChild(img);
         headerItem.appendChild(left);
         headerItem.appendChild(center);
