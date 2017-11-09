@@ -432,7 +432,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       var streamLocal = storageManager.getLocalStation() || {};
       var dataStream = streamLocal[stream] || this._streamMap[placeholder][stream];
 
-      return this._prepareTriggerDataProgram(dataProg,dataStream);
+      return this._prepareTriggerDataProgram(dataProg,dataStream,stream);
     },
 
 
@@ -441,10 +441,10 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       var streamLocal = storageManager.getLocalStation() || {};
       var dataStream = streamLocal[stream] || this._streamMap[stream];
 
-      return this._prepareTriggerDataProgram(dataProg,dataStream);
+      return this._prepareTriggerDataProgram(dataProg,dataStream,stream);
     },
 
-    _prepareTriggerDataProgram: function (dataProg,dataStream) {
+    _prepareTriggerDataProgram: function (dataProg,dataStream,stream) {
       return {
         url: dataStream,
         description: dataProg.host,
