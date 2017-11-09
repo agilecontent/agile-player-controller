@@ -345,7 +345,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
         item.dataset.antenna = data.program.isAntenna;
 
 
-        this.trigger('module:update:player:data', this._prepareMultipleTriggerData(data.stream, broadcasting));
+        this.trigger('module:update:player:data', this._prepareMultipleTriggerData(data.stream, broadcasting, prgrm));
 
         var src = prgrm.image;
         img.setAttribute('src', src);
@@ -427,10 +427,9 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       this.ui.vidPlayer.addClass('visible');
     },
 
-    _prepareMultipleTriggerData: function (stream, placeholder) {
-      var dataProg = this._streams[placeholder - 1].program;
+    _prepareMultipleTriggerData: function (stream, broadcasting, dataProg) {
       var streamLocal = storageManager.getLocalStation() || {};
-      var dataStream = streamLocal[stream] || this._streamMap[placeholder][stream];
+      var dataStream = streamLocal[stream] || this._streamMap[broadcasting][stream];
 
       return this._prepareTriggerDataProgram(dataProg,dataStream,stream);
     },
