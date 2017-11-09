@@ -71,8 +71,6 @@ define(['agile-app'], function (Agile) {
 
       var stream, streamNumber;
 
-
-
       for (var i = 0; i < data.length; i++) {
         this._initStreamsStorage (data[i].streamings.length)
         this._currentBroadcastings[i] = {
@@ -87,7 +85,7 @@ define(['agile-app'], function (Agile) {
         for (var j = 0; j < dataStreamings.length; j++) {
           streamNumber = dataStreamings[j].orden;
 
-          stream = this._initProgramMap(dataStreamings[j].broadcasts, streamNumber);
+          stream = this._initProgramMap(dataStreamings[j].broadcasts, streamNumber, dataStreamings[j].type);
 
           this._setCanal(stream, streamNumber, this._currentBroadcastings[i]);
         }
@@ -198,7 +196,7 @@ define(['agile-app'], function (Agile) {
     },
 
 
-    _buildMap: function (data, stream) {
+    _buildMap: function (data, stream, streamType) {
       var start, end, next, programs = {}, i = 0, l = data.length, defaultProg = false;
 
       for (; i < l; i++) {
@@ -221,6 +219,7 @@ define(['agile-app'], function (Agile) {
 
       for (i = 0; i < data.length; i++) {
         next = null;
+        data[i].stream = streamType;
 
         start = parseInt(data[i].start, 10);
         end = parseInt(data[i].end, 10);
@@ -244,10 +243,10 @@ define(['agile-app'], function (Agile) {
     },
 
 
-    _initProgramMap: function (data, stream) {
+    _initProgramMap: function (data, stream, streamType) {
       var curr, diff, itm, availableKeys, now, currDiff, i, keys, programs;
 
-      programs = this._buildMap(data, stream);
+      programs = this._buildMap(data, stream, streamType);
 
       availableKeys = [];
 

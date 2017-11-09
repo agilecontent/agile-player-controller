@@ -3,11 +3,11 @@ define(['agile-app', '../components/streamMapOrden'], function(Agile, streamMapO
 
 	return Agile.View.extend({
 
-		bindedTo: '[data-selector="streaming-detail-view"]',
+		bindedTo  : '[data-selector="streaming-detail-view"]',
 
 		ui: {
 			description	: 'p[data-selector="description"]',
-			title		: 'h2[data-selector="title"]',
+			title       : 'h2[data-selector="title"]',
 
 		},
 
@@ -16,7 +16,7 @@ define(['agile-app', '../components/streamMapOrden'], function(Agile, streamMapO
 		},
 
 		onBinding: function() {
-			this._stream = streamMapOrden[this.$el[0].dataset.direct];
+			this._stream = this.$el[0].dataset.direct;
 		},
 
 

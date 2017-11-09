@@ -431,7 +431,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
       var streamLocal = storageManager.getLocalStation() || {};
       var dataStream = streamLocal[stream] || this._streamMap[broadcasting][stream];
 
-      return this._prepareTriggerDataProgram(dataProg,dataStream,stream);
+      return this._prepareTriggerDataProgram(dataProg,dataStream,dataProg.stream);
     },
 
 
