@@ -430,7 +430,7 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
     _prepareMultipleTriggerData: function (stream, placeholder) {
       var dataProg = this._streams[placeholder - 1].program;
       var streamLocal = storageManager.getLocalStation() || {};
-      var dataStream = streamLocal[stream] || this._streamMap[broadcasting][data.stream];
+      var dataStream = streamLocal[stream] || this._streamMap[placeholder][data.stream];
 
       return this._prepareTriggerDataProgram(dataProg,dataStream);
     },
