@@ -12,7 +12,7 @@ define(['agile-app', '../components/streamMapOrden'], function(Agile, streamMapO
 		},
 
 		moduleEvents: {
-			'update:player:data'		: '_onDataUpdated'
+			'update:player:data'      : '_onDataUpdated'
 		},
 
 		onBinding: function() {
@@ -55,7 +55,7 @@ define(['agile-app', '../components/streamMapOrden'], function(Agile, streamMapO
 
 			player = this._getPlayer();
 
-			if (player) {
+			if (player && data.images) {
 				player.setImage(data.images);
 			}
 		}

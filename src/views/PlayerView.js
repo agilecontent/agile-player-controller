@@ -92,15 +92,11 @@ define(['agile-app'], function(Agile) {
         },
 
         _updatePlayerData: function(data) {
-
             if (this._streamId !== data.stream) {
                 return;
             }
-
             this.__player.data('mediaplayer').setImage(data.images);
-
             this.__player.data('mediaplayer').updateProgressbarTitle(data.title);
-
             this.__player.data('mediaplayer').updateProgressbarSubtitle(data.host);
         },
 

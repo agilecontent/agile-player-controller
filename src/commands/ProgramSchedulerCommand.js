@@ -289,9 +289,22 @@ define(['agile-app'], function (Agile) {
 
       if (data.length) {
         this._scheduleNext(data, stream, end);
+        this._nextProgram(data, stream, brodcasting);
       }
     },
 
+    _nextProgram: function (data, stream, brodcasting) {
+      var i = 0, l = data.length, current, nextProg;
+      for (;i < l; i++){
+        current = data[i];
+        nextProg = this._streams[stream][current];
+        if (nextProg){
+          this.trigger('module:update:nextprogram:data', nextProg);
+          break;
+        }
+      }
+
+    },
 
     _scheduleNext: function (data, stream, end) {
       var now = this._getUTCCurrentDate(), timeout, next, time;
@@ -373,6 +386,18 @@ define(['agile-app'], function (Agile) {
       this._runningTimeout = [];
 
       clearTimeout(this._repeatInterval);
+    },
+
+    _prepareTriggerDataProgram: function (dataProg,dataStream) {
+      return {
+        url: dataStream,
+        description: dataProg.host,
+        hours: dataProg.hours,
+        title: dataProg.title,
+        stream: stream,
+        host: dataProg.host,
+        images: dataProg.as_hl
+      };
     }
   });
 });
