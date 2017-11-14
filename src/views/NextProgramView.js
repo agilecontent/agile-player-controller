@@ -6,7 +6,7 @@ define(['agile-app'], function (Agile) {
     bindedTo: '[data-selector="nextProgram-view"]',
 
     ui: {
-      div: '[data-selector="nextProgram-view"]',
+      div: 'div[data-selector="nextProgram-view"]',
       image: 'img[data-selector="nextProgramImage"]',
       host: 'p[data-selector="nextProgramHost"]',
       title: 'h3[data-selector="nextProgramTitle"]'
