@@ -6,7 +6,6 @@ define(['agile-app'], function (Agile) {
     bindedTo: '[data-selector="nextProgram-view"]',
 
     ui: {
-      div: 'div[data-selector="nextProgram-view"]',
       image: 'img[data-selector="nextProgramImage"]',
       host: 'p[data-selector="nextProgramHost"]',
       title: 'h3[data-selector="nextProgramTitle"]'
@@ -38,7 +37,7 @@ define(['agile-app'], function (Agile) {
       }else {
         this.ui.host.hide();
       }
-      this.ui.div.show();
+      this.$el[0].style.display="block";
 
     }
   });
