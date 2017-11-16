@@ -285,12 +285,18 @@ define(['agile-app'], function (Agile) {
       if (current) {
         this._manageStreams(this._streams[stream][current], stream, brodcasting);
         end = this._streams[stream][current].end;
+        this._programContentGroup(this._streams[stream][current]);
       }
 
       if (data.length) {
         this._scheduleNext(data, stream, end);
         this._nextProgram(data, stream, brodcasting);
       }
+    },
+
+    _programContentGroup: function (prog) {
+      if (prog)
+        this.trigger('module:update:programcontentgroup:data', prog);
     },
 
     _nextProgram: function (data, stream, brodcasting) {

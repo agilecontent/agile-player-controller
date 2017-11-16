@@ -3,5 +3,6 @@
   "broadcastingsURL": "${broadcastingsURL}",
   "streamingsURL": "${streamingsURL}",
   "serverDateURL": "${serverDateURL}",
-  "serverLastDateURL": "${serverLastDateURL}"
+  "serverLastDateURL": "${serverLastDateURL}",
+  "cg4programfrontpagec3": "${cg4programfrontpagec3}"
 }

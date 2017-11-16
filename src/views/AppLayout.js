@@ -7,10 +7,11 @@ define([
   '../components/deviceManager',
   './DetailPlayerView',
   './StickyView',
-  './NextProgramView'
+  './NextProgramView',
+  './ProgramContentGroupView'
 
 
-], function (Agile, PlayerView, PlaylistView, ControlPanelView, StationView, deviceManager, DetailPlayerView, StickyView, NextProgramView) {
+], function (Agile, PlayerView, PlaylistView, ControlPanelView, StationView, deviceManager, DetailPlayerView, StickyView, NextProgramView, ProgramContentGroupView) {
   'use strict';
 
   return Agile.View.extend({
@@ -24,7 +25,8 @@ define([
       playlist: '[data-selector="playlist"]',
       player: '[data-selector="player-view"]',
       detailPlayer: '[data-selector="streaming-detail-view"]',
-      nextProgram: '[data-selector="nextProgram-view"]'
+      nextProgram: '[data-selector="nextProgram-view"]',
+      programContentGroup: '[data-selector="cmp-cg-4-program-manual-c3-view"]'
     },
 
     ui: {
@@ -55,6 +57,10 @@ define([
 
       if (this.nextProgram._isBinded) {
         this._nextProgramView = this.createView(NextProgramView);
+      }
+
+      if (this.programContentGroup._isBinded) {
+        this._programContentGroupView = this.createView(ProgramContentGroupView);
       }
 
       if (this.controlPanel._isBinded) {
