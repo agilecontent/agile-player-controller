@@ -289,7 +289,7 @@ define(['agile-app'], function (Agile) {
       }
 
       if (data.length) {
-        this._scheduleNext(data, stream, end);
+        this._scheduleNext(data, stream, end, brodcasting);
         this._nextProgram(data, stream, brodcasting);
       }
     },
@@ -312,7 +312,7 @@ define(['agile-app'], function (Agile) {
 
     },
 
-    _scheduleNext: function (data, stream, end) {
+    _scheduleNext: function (data, stream, end, brodcasting) {
       var now = this._getUTCCurrentDate(), timeout, next, time;
 
       next = data[0];
@@ -326,7 +326,7 @@ define(['agile-app'], function (Agile) {
       timeout = setTimeout(Agile.bind(function () {
         this._checkForLastProg(end);
         this._deleteTimeout(timeout);
-        this._setCanal(data, stream);
+        this._setCanal(data, stream, brodcasting);
       }, this), time);
 
       this._runningTimeout.push(timeout);
