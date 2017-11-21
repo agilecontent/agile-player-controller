@@ -30,6 +30,10 @@ define(['agile-app','config'], function (Agile,config) {
         success: function (html) {
           if (!~html.indexOf('item no encontrado')) {
             $('[data-selector="cmp-cg-4-program-manual-c3-view"]').html(html).show();
+            // Create the event
+            var event = new CustomEvent("setTargetBlankInStreamingPage", {});
+            // Dispatch/Trigger/Fire the event
+            document.dispatchEvent(event);
           } else {
             $('[data-selector="cmp-cg-4-program-manual-c3-view"]').hide();
           }

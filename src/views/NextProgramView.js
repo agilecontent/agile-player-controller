@@ -8,7 +8,8 @@ define(['agile-app'], function (Agile) {
     ui: {
       image: 'img[data-selector="nextProgramImage"]',
       host: 'p[data-selector="nextProgramHost"]',
-      title: 'h3[data-selector="nextProgramTitle"]'
+      title: 'h3[data-selector="nextProgramTitle"]',
+      link: 'a[data-selector="nextProgramLink"]'
 
     },
 
@@ -20,12 +21,21 @@ define(['agile-app'], function (Agile) {
       this._stream = this.$el[0].dataset.direct;
     },
 
+    _setTargetBlankInStreamingPage: function () {
+      // Create the event
+      var event = new CustomEvent("setTargetBlankInStreamingPage", {});
+
+      // Dispatch/Trigger/Fire the event
+      document.dispatchEvent(event);
+    },
+
     _onNextProgDataUpdated: function (data) {
       if (data.stream !== this._stream) {
         return;
       }
 
       this.ui.title.text(data.title);
+      this.ui.link.attr("href", "/pr/" + data.programId);
 
       if (data.image) {
         this.ui.image.attr("src", data.image);
@@ -34,11 +44,12 @@ define(['agile-app'], function (Agile) {
       }
       if (data.host) {
         this.ui.host.text(data.host);
-      }else {
+      } else {
         this.ui.host.hide();
       }
-      this.$el[0].style.display="block";
+      this.$el[0].style.display = "block";
 
+      this._setTargetBlankInStreamingPage();
     }
   });
 });
