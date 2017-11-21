@@ -138,12 +138,18 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
 
       this._reinitPlayBtnState();
 
+      if ($("#owlCarouselHeader" + data.order).children().length > 0) {
+        var owl = document.createElement('div');
+        owl.id = "owlCarouselHeader"+data.order;
+        owl.className = "owl-carousel owl-theme";
+        $("#owlCarouselHeader" + data.order).parent().html(owl);
+      }
+
       var dataBroadcastingExist = this._checkBrAlreadyExist(data);
       if (!dataBroadcastingExist) {
         this._setBroadcastingUI(data);
       }
-      /*<div id="tabHeader1" class="list select">
-      <div class="owl-carousel owl-theme" id="owlCarouselHeader">*/
+
       var dataStreamingCarouselExsist = this._checkStreamingCarouselAlreadyExist(data);
       if (!dataStreamingCarouselExsist) {
         this._setStreamingCarouselUI(data);

@@ -20,6 +20,10 @@ define(['agile-app'], function (Agile) {
 
       this._parseProgram(data);
 
+      this._reloadTabsHeader();
+    },
+
+    _reloadTabsHeader: function () {
       // Create the event
       var event = new CustomEvent("reload-tabs-header", {});
 
@@ -85,7 +89,7 @@ define(['agile-app'], function (Agile) {
         for (var j = 0; j < dataStreamings.length; j++) {
           streamNumber = dataStreamings[j].orden;
 
-          stream = this._initProgramMap(dataStreamings[j].broadcasts, streamNumber, dataStreamings[j].type);
+          stream = this._initProgramMap(dataStreamings[j].broadcasts, streamNumber, data[i].orden, dataStreamings[j].type);
 
           this._setCanal(stream, streamNumber, this._currentBroadcastings[i]);
         }
@@ -196,7 +200,7 @@ define(['agile-app'], function (Agile) {
     },
 
 
-    _buildMap: function (data, stream, streamType) {
+    _buildMap: function (data, stream, broadcastGroup, streamType) {
       var start, end, next, programs = {}, i = 0, l = data.length, defaultProg = false;
 
       for (; i < l; i++) {
@@ -236,17 +240,19 @@ define(['agile-app'], function (Agile) {
 
         this._allDayEndProg.push(end);
       }
+      if (this._streams[broadcastGroup] === undefined)
+        this._streams[broadcastGroup]={};
 
-      this._streams[stream] = programs;
+      this._streams[broadcastGroup][stream] = programs;
 
       return programs;
     },
 
 
-    _initProgramMap: function (data, stream, streamType) {
+    _initProgramMap: function (data, stream, broadcastGroup, streamType) {
       var curr, diff, itm, availableKeys, now, currDiff, i, keys, programs;
 
-      programs = this._buildMap(data, stream, streamType);
+      programs = this._buildMap(data, stream, broadcastGroup, streamType);
 
       availableKeys = [];
 
@@ -283,9 +289,9 @@ define(['agile-app'], function (Agile) {
       var current = data.shift(), end;
 
       if (current) {
-        this._manageStreams(this._streams[stream][current], stream, brodcasting);
-        end = this._streams[stream][current].end;
-        this._programContentGroup(this._streams[stream][current]);
+        this._manageStreams(this._streams[brodcasting.order][stream][current], stream, brodcasting);
+        end = this._streams[brodcasting.order][stream][current].end;
+        this._programContentGroup(this._streams[brodcasting.order][stream][current]);
       }
 
       if (data.length) {
@@ -303,7 +309,7 @@ define(['agile-app'], function (Agile) {
       var i = 0, l = data.length, current, nextProg;
       for (;i < l; i++){
         current = data[i];
-        nextProg = this._streams[stream][current];
+        nextProg = this._streams[brodcasting.order][stream][current];
         if (nextProg){
           this.trigger('module:update:nextprogram:data', nextProg);
           break;
@@ -327,6 +333,7 @@ define(['agile-app'], function (Agile) {
         this._checkForLastProg(end);
         this._deleteTimeout(timeout);
         this._setCanal(data, stream, brodcasting);
+        this._reloadTabsHeader();
       }, this), time);
 
       this._runningTimeout.push(timeout);
