@@ -382,8 +382,12 @@ define(['agile-app', '../components/storageManager'], function (Agile, storageMa
         btnIcon.appendChild(link);
         right.appendChild(btnIcon);
         center.appendChild(titPlayer);
-        center.appendChild(authorPlayer);
-        center.appendChild(hourPlayer);
+        if (prgrm.host != undefined) {
+          center.appendChild(authorPlayer);
+        }
+        if (prgrm.hours != undefined) {
+          center.appendChild(hourPlayer);
+        }
         left.appendChild(img);
         headerItem.appendChild(left);
         headerItem.appendChild(center);
