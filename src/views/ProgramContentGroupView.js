@@ -22,10 +22,8 @@ define(['agile-app','config'], function (Agile,config) {
 
       $.ajax({
         type: 'GET',
-        url: config.cg4programfrontpagec3,
-        data: {
-          program: data.taxonomy
-        },
+        url: config.cg4programfrontpagec3.replace("{program}",data.taxonomy),
+        data: {},
         dataType: 'html',
         success: function (html) {
           if (!~html.indexOf('item no encontrado')) {
