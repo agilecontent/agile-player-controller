@@ -234,7 +234,7 @@ define(['agile-app'], function (Agile) {
 
         programs[start] = data[i];
 
-        if (next !== end) {
+        if (next !== end && next > end) {
           programs[end] = defaultProg;
         }
 
