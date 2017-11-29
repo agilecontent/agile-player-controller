@@ -26,7 +26,7 @@ define(['agile-app','config'], function (Agile,config) {
         data: {},
         dataType: 'html',
         success: function (html) {
-          if (!~html.indexOf('item no encontrado')) {
+          if (!~html.indexOf('cmp-cg-4-programas-manual-c3-by-id:item no encontrado')) {
             $('[data-selector="cmp-cg-4-program-manual-c3-view"]').html(html).show();
             // Create the event
             var event = new CustomEvent("setTargetBlankInStreamingPage", {});
