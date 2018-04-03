@@ -6,4 +6,5 @@
 dist/
 node_modules/
 jspm_packages/
+agile-player-controller-0.0.0-cadena3.iml
 *.iml
