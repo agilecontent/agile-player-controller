@@ -15,8 +15,11 @@ define(['agile-app', 'config'], function(Agile, config) {
                 this.triggerToModule('get:server:data', {
                     force: true
                 });
+                // Sólo repintar los módulos si no es la primera vez que se carga la página
+                if (this.__date !== undefined) {
+                  this.triggerToModule('get:guide:server:data');
+                }
             }
-
             this.__date = data;
         }
     });

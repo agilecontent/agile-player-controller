@@ -300,6 +300,9 @@ define(['agile-app'], function (Agile) {
 
       if (index === this._allDayEndProg.length - 1) {
         this._waitToEndOfDay();
+      } else {
+        // Repintar los módulos al cambiar de emisión
+        this.triggerToModule('get:guide:server:data');
       }
     },
 
@@ -338,6 +341,8 @@ define(['agile-app'], function (Agile) {
 
       this._repeatInterval = setInterval(Agile.bind(function () {
         this.triggerToModule('get:server:data');
+        // Repintar los módulos al cambiar de emisión
+        this.triggerToModule('get:guide:server:data');
       }, this), this._repeatTimer);
     },
 

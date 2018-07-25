@@ -7,8 +7,9 @@ define([
     '../commands/SetReloadTimerCommand',
     '../commands/SetCallUrlTimerCommand',
     '../commands/GetLastModificationDateCommand',
+    '../commands/GetGuideDataCommand'
 
-], function(Agile, GetProgramCommand, ProgramSchedulerCommand, GetLocalStationCommand, GetServerDataCommand, SetReloadTimer, SetCallUrlTimerCommand, GetLastModificationDateCommand) {
+], function(Agile, GetProgramCommand, ProgramSchedulerCommand, GetLocalStationCommand, GetServerDataCommand, SetReloadTimer, SetCallUrlTimerCommand, GetLastModificationDateCommand, GetGuideDataCommand) {
     'use strict';
 
 	return Agile.Controller.extend({
@@ -20,7 +21,9 @@ define([
             'get:server:data'               : 'getServerData',
             'set:reload:timer'              : 'SetReload',
             'set:call:url:timer'            : 'SetCallUrlTimer',
-            'get:last:server:modification'  : 'GetLastModificationDate'
+            'get:last:server:modification'  : 'GetLastModificationDate',
+            'get:guide:server:data'         : 'GetGuideDataCommand'
+
         },
 
         commands: {
@@ -30,7 +33,8 @@ define([
             'getServerData'             : GetServerDataCommand,
             'SetReload'                 : SetReloadTimer,
             'SetCallUrlTimer'           : SetCallUrlTimerCommand,
-            'GetLastModificationDate'   : GetLastModificationDateCommand
+            'GetLastModificationDate'   : GetLastModificationDateCommand,
+            'GetGuideDataCommand'       : GetGuideDataCommand
         }
 
     });
