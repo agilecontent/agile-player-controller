@@ -15,7 +15,7 @@ define(['agile-app', 'config'], function(Agile, config) {
         if (++x === 3) {
           window.clearInterval(intervalID);
         }
-      }, 10000);
+      }, 20000);
     },
     _reloadSliders: function () {
       // Create the event
