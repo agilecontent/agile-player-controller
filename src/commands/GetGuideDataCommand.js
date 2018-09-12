@@ -10,6 +10,7 @@ define(['agile-app', 'config'], function(Agile, config) {
         $("[data-selector='cmp-streaming-guide']").load(config.guideURL);
         $("[data-selector='cmp-all-streaming-guide']").load(config.guideDaylistURL);
         $("[data-selector='cmp-sticky-guide']").load(config.guideStickyURL);
+        $("[data-selector='cmp-guide-detail-view']").load(config.guideDetailURL);
         $("[data-selector='cmp-sticky-footer-guide']").load(config.guideFooterURL,_this._reloadSliders());
 
         if (++x === 3) {
